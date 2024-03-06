@@ -61,6 +61,7 @@ function renderLocs(locs) {
     elLocList.innerHTML = strHTML || 'No locs to show'
 
     renderLocStats()
+    renderLocUpdateStats()
 
     if (selectedLocId) {
         const selectedLoc = locs.find(loc => loc.id === selectedLocId)
@@ -260,6 +261,52 @@ function renderLocStats() {
 }
 
 function handleStats(stats, selector) {
+    // stats = { low: 37, medium: 11, high: 100, total: 148 }
+    // stats = { low: 5, medium: 5, high: 5, baba: 55, mama: 30, total: 100 }
+    const labels = cleanStats(stats)
+    const colors = utilService.getColors()
+
+    var sumPercent = 0
+    var colorsStr = `${colors[0]} ${0}%, `
+    labels.forEach((label, idx) => {
+        if (idx === labels.length - 1) return
+        const count = stats[label]
+        const percent = Math.round((count / stats.total) * 100, 2)
+        sumPercent += percent
+        colorsStr += `${colors[idx]} ${sumPercent}%, `
+        if (idx < labels.length - 1) {
+            colorsStr += `${colors[idx + 1]} ${sumPercent}%, `
+        }
+    })
+
+    colorsStr += `${colors[labels.length - 1]} ${100}%`
+    // Example:
+    // colorsStr = `purple 0%, purple 33%, blue 33%, blue 67%, red 67%, red 100%`
+
+    const elPie = document.querySelector(`.${selector} .pie`)
+    const style = `background-image: conic-gradient(${colorsStr})`
+    elPie.style = style
+
+    const ledendHTML = labels.map((label, idx) => {
+        return `
+                <li>
+                    <span class="pie-label" style="background-color:${colors[idx]}"></span>
+                    ${label} (${stats[label]})
+                </li>
+            `
+    }).join('')
+
+    const elLegend = document.querySelector(`.${selector} .legend`)
+    elLegend.innerHTML = ledendHTML
+}
+
+function renderLocUpdateStats() {
+    locService.getLocCountByLastUpdated().then(stats => {
+        handleUpdateStats(stats, 'loc-update-stats-rate')
+    })
+}
+
+function handleUpdateStats(stats, selector) {
     // stats = { low: 37, medium: 11, high: 100, total: 148 }
     // stats = { low: 5, medium: 5, high: 5, baba: 55, mama: 30, total: 100 }
     const labels = cleanStats(stats)
