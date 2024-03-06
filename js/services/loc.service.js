@@ -54,10 +54,12 @@ function query() {
                 locs.sort((p1, p2) => (p1.rate - p2.rate) * gSortBy.rate)
             } else if (gSortBy.name !== undefined) {
                 locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name)
-            } else if (gSortBy.)
+            } else if (gSortBy.creation !== undefined) {
+                console.log('YYY')
+                locs.sort((p1, p2) => (p1.createdAt - p2.createdAt) * gSortBy.createdAt)
+            }
 
-
-                console.log(gSortBy)
+            console.log(gSortBy)
 
             return locs
         })
