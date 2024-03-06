@@ -21,6 +21,8 @@ var gSortBy = { rate: -1, created: -1 }
 var gFilterBy = { txt: '', minRate: 0 }
 var gPageIdx
 
+console.log();
+
 _createLocs()
 
 export const locService = {

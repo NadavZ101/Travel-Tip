@@ -4,6 +4,8 @@ import { mapService } from './services/map.service.js'
 
 window.onload = onInit
 
+let gUserPos
+
 // To make things easier in this project structure 
 // functions that are called from DOM are defined on a global app object
 window.app = {
@@ -17,6 +19,10 @@ window.app = {
     onSetSortBy,
     onSetFilterBy,
 }
+
+const haifa ={ lat:32.794044, lng:34.989571}
+
+console.log(utilService.getDistance(gUserPos,haifa, 'K'))
 
 function onInit() {
     loadAndRenderLocs()
@@ -42,6 +48,7 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
+                <!-- <span>utilService.getDistance(gUserPos,loc.geo,'K')}</span>-->
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -135,6 +142,7 @@ function onPanToUserPos() {
             mapService.panTo({ ...latLng, zoom: 15 })
             unDisplayLoc()
             loadAndRenderLocs()
+            gUserPos= {latLng}
             flashMsg(`You are at Latitude: ${latLng.lat} Longitude: ${latLng.lng}`)
         })
         .catch(err => {
