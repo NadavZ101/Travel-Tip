@@ -107,6 +107,22 @@ function getLocCountByRateMap() {
         })
 }
 
+function getLocCountByLastUpdated() {
+    return storageService.query(DB_KEY)
+        .then(locs => {
+            const locCountBtUpdatedMap = locs.reduce((map, loc) => {
+                const updatedTime = elapsedTime(loc.updatedAt)
+                const createdTime = elapsedTime(loc.createdAt)
+                if (updatedTime === createdTime) map.never++
+                else if (updatedTime === 'just now' || updatedTime === 'last hour' || updatedTime === 'today') map.today++
+                else map.past++
+                return map
+            }, { never: 0, today: 0, past: 0 })
+            locCountBtUpdatedMap.total = locs.length
+            return locCountBtUpdatedMap
+        })
+}
+
 function setSortBy(sortBy = {}) {
     gSortBy = sortBy
 }
