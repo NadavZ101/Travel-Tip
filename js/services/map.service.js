@@ -10,6 +10,8 @@ export const mapService = {
 
 import { API_KEY } from '/apikey.js'
 
+console.log(API_KEY);
+
 // TODO: Enter your API Key
 // const API_KEY = ''
 var gMap
